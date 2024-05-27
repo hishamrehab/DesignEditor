@@ -1,55 +1,43 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Spinner } from '@blueprintjs/core';
+import React from "react";
+import { observer } from "mobx-react-lite";
 
-import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from 'polotno';
-import { Toolbar } from 'polotno/toolbar/toolbar';
-import { ZoomButtons } from 'polotno/toolbar/zoom-buttons';
-import { SidePanel, DEFAULT_SECTIONS } from 'polotno/side-panel';
-import { Workspace } from 'polotno/canvas/workspace';
-import { Tooltip } from 'polotno/canvas/tooltip';
-import { PagesTimeline } from 'polotno/pages-timeline';
-import { setTranslations } from 'polotno/config';
+import { Spinner } from "@blueprintjs/core";
 
-import { loadFile } from './file';
+import { PolotnoContainer, SidePanelWrap, WorkspaceWrap } from "polotno";
+import { Toolbar } from "polotno/toolbar/toolbar";
+import { ZoomButtons } from "polotno/toolbar/zoom-buttons";
+import { SidePanel, DEFAULT_SECTIONS } from "polotno/side-panel";
+import { Workspace } from "polotno/canvas/workspace";
+import { Tooltip } from "polotno/canvas/tooltip";
+import { PagesTimeline } from "polotno/pages-timeline";
+import { setTranslations } from "polotno/config";
+import { loadFile } from "./file";
 
-import { QrSection } from './sections/qr-section';
-import { QuotesSection } from './sections/quotes-section';
-import { IconsSection } from './sections/icons-section';
-import { ShapesSection } from './sections/shapes-section';
-import { StableDiffusionSection } from './sections/stable-diffusion-section';
-import { MyDesignsSection } from './sections/my-designs-section';
-import { VideosSection } from './sections/video-section';
-// import { UploadSection } from './sections/upload-section';
+import { ShapesSection } from "./sections/shapes-section";
+import { StableDiffusionSection } from "./sections/stable-diffusion-section";
+import { MyDesignsSection } from "./sections/my-designs-section";
 
-import { useProject } from './project';
+import { useProject } from "./project";
 
-import { ImageRemoveBackground } from './background-remover';
+import { ImageRemoveBackground } from "./background-remover";
 
-import fr from './translations/fr';
-import en from './translations/en';
-import id from './translations/id';
-import ru from './translations/ru';
-import ptBr from './translations/pt-br';
-
-import Topbar from './topbar/topbar';
+import en from "./translations/en";
+import Topbar from "./topbar/topbar";
 
 // replace elements section with just shapes
 DEFAULT_SECTIONS.splice(3, 1, ShapesSection);
 // add icons
-DEFAULT_SECTIONS.splice(3, 0, IconsSection);
 // add two more sections
-DEFAULT_SECTIONS.push(QuotesSection, QrSection);
+
 // DEFAULT_SECTIONS.unshift(UploadSection);
 DEFAULT_SECTIONS.unshift(MyDesignsSection);
 
 DEFAULT_SECTIONS.push(StableDiffusionSection);
-DEFAULT_SECTIONS.push(VideosSection);
 
 const useHeight = () => {
   const [height, setHeight] = React.useState(window.innerHeight);
   React.useEffect(() => {
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       setHeight(window.innerHeight);
     });
   }, []);
@@ -61,17 +49,7 @@ const App = observer(({ store }) => {
   const height = useHeight();
 
   React.useEffect(() => {
-    if (project.language.startsWith('fr')) {
-      setTranslations(fr);
-    } else if (project.language.startsWith('id')) {
-      setTranslations(id);
-    } else if (project.language.startsWith('ru')) {
-      setTranslations(ru);
-    } else if (project.language.startsWith('pt')) {
-      setTranslations(ptBr);
-    } else {
-      setTranslations(en);
-    }
+    setTranslations(en);
   }, [project.language]);
 
   React.useEffect(() => {
@@ -96,15 +74,15 @@ const App = observer(({ store }) => {
   return (
     <div
       style={{
-        width: '100vw',
-        height: height + 'px',
-        display: 'flex',
-        flexDirection: 'column',
+        width: "100vw",
+        height: height + "px",
+        display: "flex",
+        flexDirection: "column",
       }}
       onDrop={handleDrop}
     >
       <Topbar store={store} />
-      <div style={{ height: 'calc(100% - 50px)' }}>
+      <div style={{ height: "calc(100% - 50px)" }}>
         <PolotnoContainer className="polotno-app-container">
           <SidePanelWrap>
             <SidePanel store={store} sections={DEFAULT_SECTIONS} />
@@ -122,25 +100,25 @@ const App = observer(({ store }) => {
           </WorkspaceWrap>
         </PolotnoContainer>
       </div>
-      {project.status === 'loading' && (
+      {project.status === "loading" && (
         <div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundColor: 'rgba(0,0,0,0.5)',
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.5)",
             zIndex: 1000,
           }}
         >
           <div
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              color: 'white',
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              color: "white",
             }}
           >
             <Spinner />

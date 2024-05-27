@@ -1,44 +1,44 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { InputGroup, Card, Button } from '@blueprintjs/core';
+import React from "react";
+import { observer } from "mobx-react-lite";
+import { InputGroup, Card, Button } from "@blueprintjs/core";
 
 // import { urlToBase64, svgToURL } from 'polotno/utils/svg';
-import { SectionTab } from 'polotno/side-panel';
-import { getKey } from 'polotno/utils/validate-key';
+import { SectionTab } from "polotno/side-panel";
+import { getKey } from "polotno/utils/validate-key";
 // import { getImageSize } from 'polotno/utils/image';
-import FdCommentQuotes from '@meronex/icons/fd/FdCommentQuotes';
-import { getAPI } from 'polotno/utils/api';
+import FdCommentQuotes from "@meronex/icons/fd/FdCommentQuotes";
+import { getAPI } from "polotno/utils/api";
 
 // import { ImagesGrid } from 'polotno/side-panel/images-grid';
 
 const KEYWORDS = [
-  'Love',
-  'Movies',
-  'Life',
-  'History',
-  'War',
-  'Political',
-  'Time',
-  'Music',
-  'Sport',
-  'Business',
-  'Think',
-  'Travel',
-  'Work',
-  'Science',
-  'Religions',
-  'Money',
-  'Funny',
+  "Love",
+  "Movies",
+  "Life",
+  "History",
+  "War",
+  "Political",
+  "Time",
+  "Music",
+  "Sport",
+  "Business",
+  "Think",
+  "Travel",
+  "Work",
+  "Science",
+  "Religions",
+  "Money",
+  "Funny",
 ];
 
 export const QuotesPanel = observer(({ store }) => {
   const [loading, setLoading] = React.useState(true);
-  const [query, setQuery] = React.useState('');
-  const [keywords, setKeywords] = React.useState('');
+  const [query, setQuery] = React.useState("");
+  const [keywords, setKeywords] = React.useState("");
   const [items, setItems] = React.useState([]);
 
   React.useEffect(() => {
-    store.loadFont('Atma');
+    store.loadFont("Atma");
   }, []);
 
   const timeout = React.useRef();
@@ -77,7 +77,7 @@ export const QuotesPanel = observer(({ store }) => {
   }, [query, keywords]);
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <InputGroup
         leftIcon="search"
         placeholder="Search..."
@@ -85,7 +85,7 @@ export const QuotesPanel = observer(({ store }) => {
           requestQuery(e.target.value);
         }}
         style={{
-          marginBottom: '20px',
+          marginBottom: "20px",
         }}
       />
       <div>
@@ -94,64 +94,64 @@ export const QuotesPanel = observer(({ store }) => {
             key={keyword}
             onClick={() => {
               if (keyword === keywords) {
-                setKeywords('');
+                setKeywords("");
               } else {
                 setKeywords(keyword);
               }
             }}
             minimal
             active={keyword === keywords}
-            style={{ fontSize: '14px', padding: '2px 8px' }}
+            style={{ fontSize: "14px", padding: "2px 8px" }}
           >
             {keyword}
           </Button>
         ))}
       </div>
-      {loading && <div style={{ padding: '10px' }}>Loading...</div>}
+      {loading && <div style={{ padding: "10px" }}>Loading...</div>}
       <div
         style={{
-          height: '100%',
-          overflow: 'auto',
-          display: loading ? 'none' : 'block',
+          height: "100%",
+          overflow: "auto",
+          display: loading ? "none" : "block",
         }}
       >
         {items.map((item) => (
           <Card
             key={item.id}
             interactive
-            style={{ margin: '10px' }}
+            style={{ margin: "10px" }}
             onClick={() => {
               const width = 500;
               const textEl = store.activePage.addElement({
-                type: 'text',
+                type: "text",
                 text: item.text,
                 width: width,
                 x: store.width / 2 - width / 2,
                 y: store.height / 2 - 100,
-                fontFamily: 'Atma',
+                fontFamily: "Atma",
                 fontSize: 30,
               });
               setTimeout(() => {
                 const authorEl = store.activePage.addElement({
-                  type: 'text',
+                  type: "text",
                   text: item.author,
                   y: textEl.y + textEl.height + 10,
                   x: textEl.x,
-                  align: 'right',
+                  align: "right",
                   width: width,
                   fontSize: 20,
-                  fontFamily: 'Atma',
+                  fontFamily: "Atma",
                 });
                 store.selectElements([textEl.id, authorEl.id]);
               }, 60);
             }}
           >
             <div>{item.text}</div>
-            <div style={{ textAlign: 'right' }}>{item.author}</div>
+            <div style={{ textAlign: "right" }}>{item.author}</div>
           </Card>
         ))}
         {!loading && items.length === 0 && (
-          <div style={{ padding: '10px' }}>No results</div>
+          <div style={{ padding: "10px" }}>No results</div>
         )}
       </div>
     </div>
@@ -160,7 +160,7 @@ export const QuotesPanel = observer(({ store }) => {
 
 // define the new custom section
 export const QuotesSection = {
-  name: 'quotes',
+  name: "quotes",
   Tab: (props) => (
     <SectionTab name="Quotes" {...props}>
       <FdCommentQuotes />

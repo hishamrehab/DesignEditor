@@ -1,8 +1,8 @@
-import * as mobx from 'mobx';
-import { createContext, useContext } from 'react';
-import localforage from 'localforage';
+import * as mobx from "mobx";
+import { createContext, useContext } from "react";
+import localforage from "localforage";
 
-import * as api from './api';
+import * as api from "./api";
 
 window.localforage = localforage;
 
@@ -25,20 +25,20 @@ const setToStorage = (key, value) => {
 };
 
 class Project {
-  id = '';
-  name = '';
+  id = "";
+  name = "";
   user = {};
   skipSaving = false;
   cloudEnabled = false;
-  status = 'saved'; // or 'has-changes' or 'saving' or 'loading'
-  language = getFromStorage('polotno-language') || navigator.language || 'en';
+  status = "saved"; // or 'has-changes' or 'saving' or 'loading'
+  language = "en";
   designsLength = 0;
 
   constructor({ store }) {
     mobx.makeAutoObservable(this);
     this.store = store;
 
-    store.on('change', () => {
+    store.on("change", () => {
       this.requestSave();
     });
 
@@ -51,11 +51,11 @@ class Project {
 
   setLanguage(lang) {
     this.language = lang;
-    setToStorage('polotno-language', lang);
+    setToStorage("polotno-language", lang);
   }
 
   requestSave() {
-    this.status = 'has-changes';
+    this.status = "has-changes";
     if (this.saveTimeout) {
       return;
     }
@@ -67,14 +67,14 @@ class Project {
   }
 
   async firstLoad() {
-    const deprecatedDesign = await localforage.getItem('polotno-state');
+    const deprecatedDesign = await localforage.getItem("polotno-state");
     if (deprecatedDesign) {
       this.store.loadJSON(deprecatedDesign);
-      await localforage.removeItem('polotno-state');
+      await localforage.removeItem("polotno-state");
       await this.save();
       return;
     }
-    const lastDesignId = await localforage.getItem('polotno-last-design-id');
+    const lastDesignId = await localforage.getItem("polotno-last-design-id");
     if (lastDesignId) {
       await this.loadById(lastDesignId);
     }
@@ -82,8 +82,8 @@ class Project {
 
   async loadById(id) {
     this.id = id;
-    await localforage.setItem('polotno-last-design-id', id);
-    this.status = 'loading';
+    await localforage.setItem("polotno-last-design-id", id);
+    this.status = "loading";
     try {
       const { storeJSON, name } = await api.loadById({
         id,
@@ -94,26 +94,26 @@ class Project {
       this.name = name;
     } catch (e) {
       console.error(e);
-      this.id = '';
-      this.name = 'Untitled Design';
-      await localforage.removeItem('polotno-last-design-id');
+      this.id = "";
+      this.name = "Untitled Design";
+      await localforage.removeItem("polotno-last-design-id");
     }
-    this.status = 'saved';
+    this.status = "saved";
   }
 
   updateUrlWithProjectId() {
-    if (!this.id || this.id === 'local') {
+    if (!this.id || this.id === "local") {
       window.history.replaceState({}, null, `/`);
       return;
     }
     let url = new URL(window.location.href);
     let params = new URLSearchParams(url.search);
-    params.set('id', this.id);
+    params.set("id", this.id);
     window.history.replaceState({}, null, `/design/${this.id}`);
   }
 
   async save() {
-    this.status = 'saving';
+    this.status = "saving";
     const storeJSON = this.store.toJSON();
     const maxWidth = 200;
     const canvas = await this.store._toCanvas({
@@ -121,7 +121,7 @@ class Project {
       pageId: this.store.activePage?.id,
     });
     const blob = await new Promise((resolve) => {
-      canvas.toBlob(resolve, 'image/jpeg', 0.9);
+      canvas.toBlob(resolve, "image/jpeg", 0.9);
     });
     try {
       const res = await api.saveDesign({
@@ -130,32 +130,32 @@ class Project {
         id: this.id,
         name: this.name,
       });
-      if (res.status === 'saved') {
+      if (res.status === "saved") {
         this.id = res.id;
-        await localforage.setItem('polotno-last-design-id', res.id);
+        await localforage.setItem("polotno-last-design-id", res.id);
       }
     } catch (e) {
       console.error(e);
     }
-    this.status = 'saved';
+    this.status = "saved";
   }
 
   async duplicate() {
-    this.id = '';
+    this.id = "";
     this.save();
   }
 
   async clear() {
     this.store.clear();
     this.store.addPage();
-    await localforage.removeItem('polotno-last-design-id');
+    await localforage.removeItem("polotno-last-design-id");
   }
 
   async createNewDesign() {
     await this.clear();
-    window.project.name = 'Untitled Design';
-    window.project.id = '';
-    this.store.openSidePanel('photos');
+    window.project.name = "Untitled Design";
+    window.project.id = "";
+    this.store.openSidePanel("photos");
     await window.project.save();
   }
 

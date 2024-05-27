@@ -1,26 +1,26 @@
-import React from 'react';
-import { observer } from 'mobx-react-lite';
-import { Button, Dialog, Classes } from '@blueprintjs/core';
+import React from "react";
+import { observer } from "mobx-react-lite";
+import { Button, Dialog, Classes } from "@blueprintjs/core";
 
-import { t } from 'polotno/utils/l10n';
-import { getKey } from 'polotno/utils/validate-key';
-import { useCredits } from './credits';
-import { useProject } from './project';
-import { getAPI } from 'polotno/utils/api';
+import { t } from "polotno/utils/l10n";
+import { getKey } from "polotno/utils/validate-key";
+import { useCredits } from "./credits";
+import { useProject } from "./project";
+import { getAPI } from "polotno/utils/api";
 
 let removeBackgroundFunc = async (url) => {
   const req = await fetch(
     `${getAPI()}/remove-image-background?KEY=` + getKey(),
     {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ url }),
     }
   );
   if (req.status !== 200) {
-    alert(t('error.removeBackground'));
+    alert(t("error.removeBackground"));
     return url;
   }
   const res = await req.json();
@@ -32,7 +32,7 @@ export const RemoveBackgroundDialog = observer(
     const project = useProject();
     const [src, setSrc] = React.useState(element.src);
     const { credits, consumeCredits } = useCredits(
-      'removeBackgroundCredits',
+      "removeBackgroundCredits",
       5
     );
 
@@ -67,7 +67,7 @@ export const RemoveBackgroundDialog = observer(
         consumeCredits();
       } catch (e) {
         if (window.Sentry) {
-          window.Sentry.captureException(new Error('Background remove error'));
+          window.Sentry.captureException(new Error("Background remove error"));
           setTimeout(() => {
             window.__failedImage = null;
           }, 1000);
@@ -87,19 +87,19 @@ export const RemoveBackgroundDialog = observer(
         title="Remove background from image"
         isOpen={isOpen}
         style={{
-          width: '80%',
-          maxWidth: '700px',
+          width: "80%",
+          maxWidth: "700px",
         }}
       >
         <div className={Classes.DIALOG_BODY}>
           <img
             src={src}
-            style={{ width: '100%', maxHeight: '400px', objectFit: 'contain' }}
+            style={{ width: "100%", maxHeight: "400px", objectFit: "contain" }}
           />
         </div>
-        <div className={Classes.DIALOG_FOOTER} style={{ position: 'relative' }}>
+        <div className={Classes.DIALOG_FOOTER} style={{ position: "relative" }}>
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <div style={{ padding: '5px' }}>
+            <div style={{ padding: "5px" }}>
               {removing && <span>{progress}%</span>}
               {!removing && !!credits && <div>You have {credits} credits.</div>}
               {!removing && !credits && (
@@ -112,7 +112,7 @@ export const RemoveBackgroundDialog = observer(
                 loading={removing}
                 disabled={credits < 1}
               >
-                {t('toolbar.removeBackground')}
+                {t("toolbar.removeBackground")}
               </Button>
             )}
             {finished && (
@@ -124,7 +124,7 @@ export const RemoveBackgroundDialog = observer(
                   }}
                   loading={removing}
                 >
-                  {t('toolbar.cancelRemoveBackground')}
+                  {t("toolbar.cancelRemoveBackground")}
                 </Button>
                 <Button
                   onClick={() => {
@@ -134,7 +134,7 @@ export const RemoveBackgroundDialog = observer(
                   loading={removing}
                   intent="primary"
                 >
-                  {t('toolbar.confirmRemoveBackground')}
+                  {t("toolbar.confirmRemoveBackground")}
                 </Button>
               </>
             )}
@@ -150,7 +150,7 @@ export const ImageRemoveBackground = ({ element }) => {
   return (
     <>
       <Button
-        text={t('toolbar.removeBackground')}
+        text={t("toolbar.removeBackground")}
         minimal
         onClick={(e) => {
           toggleDialog(true);
